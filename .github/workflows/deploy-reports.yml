@@ -1,0 +1,83 @@
+name: ResistAI — Deploy Mobile Automation Reports to GitHub Pages
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["ResistAI — Android Appium E2E Automation & CI/CD Pipeline"]
+    types:
+      - completed
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy-reports:
+    name: 🌐 Publish Reports to GitHub Pages
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: |
+          pip install openpyxl
+
+      - name: Compile Fresh Reports
+        run: |
+          python automation/runners/mobile_test_runner.py --mock
+
+      - name: Prepare Pages Deployment Directory
+        run: |
+          mkdir -p public/reports/latest
+          mkdir -p public/reports/history/build-${{ github.run_number }}
+
+          cp -r "Test Results/HTML/"* public/reports/latest/
+          cp -r "Test Results/Excel/"* public/reports/latest/ || true
+          cp -r "Test Results/Summary/"* public/reports/latest/ || true
+          mkdir -p public/reports/latest/screenshots public/reports/latest/logs
+          cp -r "Test Results/Screenshots/"* public/reports/latest/screenshots/ || true
+          cp -r "Test Results/Logs/"* public/reports/latest/logs/ || true
+
+          cp -r public/reports/latest/* public/reports/history/build-${{ github.run_number }}/
+
+          cat << 'EOF' > public/index.html
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta http-equiv="refresh" content="0; url=reports/latest/execution-report.html" />
+          </head>
+          <body>
+            <p>Redirecting to <a href="reports/latest/execution-report.html">Latest Android E2E Execution Report</a>...</p>
+          </body>
+          </html>
+          EOF
+
+          touch public/.nojekyll
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

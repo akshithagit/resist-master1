@@ -1,0 +1,15 @@
+{
+  "platformName": "Android",
+  "appium:automationName": "UiAutomator2",
+  "appium:deviceName": "Android Emulator",
+  "appium:platformVersion": "11.0",
+  "appium:appPackage": "com.resistai.app",
+  "appium:appActivity": "com.resistai.app.MainActivity",
+  "appium:noReset": true,
+  "appium:fullReset": false,
+  "appium:autoGrantPermissions": true,
+  "appium:newCommandTimeout": 300,
+  "appium:ensureWebviewsHavePages": true,
+  "appium:nativeWebScreenshot": true,
+  "appium:connectHardwareKeyboard": true
+}
