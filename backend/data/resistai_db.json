@@ -1,0 +1,648 @@
+{
+  "users": [],
+  "analyses": [
+    {
+      "id": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "userId": "demo-user-id",
+      "title": "Case 2: Multidrug-Resistant K. pneumoniae (ESBL & Carbapenemase) [SYNTHETIC DEMO]",
+      "status": "COMPLETE",
+      "modelVersion": "risk-model-0.1.0",
+      "createdAt": "2026-10-02T18:39:39.669Z",
+      "updatedAt": "2026-10-02T18:39:39.685Z",
+      "riskPercentage": 82.5,
+      "riskCategory": "High",
+      "evidenceCoverage": "Broad"
+    }
+  ],
+  "documents": [
+    {
+      "id": "2e7ff7bc-3920-4d31-ad72-ed52e26a3d1f",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "storageKey": "'synthetic_' + caseId + '.pdf'",
+      "originalFilename": "demoCase.id.replace(/[-]/g, '_') + '_synthetic_report.pdf'",
+      "mimeType": "application/pdf",
+      "fileSize": 48200,
+      "pageCount": 1,
+      "ocrStatus": "COMPLETED",
+      "createdAt": "2026-10-02T18:39:39.670Z"
+    }
+  ],
+  "extractedTexts": [
+    {
+      "id": "31dcbc3a-8bf6-48f1-b739-28ddd149c0ad",
+      "documentId": "2e7ff7bc-3920-4d31-ad72-ed52e26a3d1f",
+      "pageNumber": 1,
+      "text": "CLINICAL MICROBIOLOGY & RESISTANCE SURVEILLANCE REPORT\nSpecimen: Urine & Catheter Tip\nCulture: Klebsiella pneumoniae > 10^5 CFU/mL\nPhenotypic Markers: MDR (Multi-Drug Resistant), ESBL Producer positive\nMolecular Resistance Genes: blaCTX-M-15 positive, blaNDM-1 positive (Carbapenemase)\nSusceptibility Testing:\nAmpicillin: Resistant\nCeftriaxone: Resistant (MIC >= 64 ug/mL)\nCeftazidime: Resistant (MIC >= 32 ug/mL)\nCiprofloxacin: Resistant (MIC >= 4 ug/mL)\nLevofloxacin: Resistant (MIC >= 8 ug/mL)\nPiperacillin-Tazobactam: Resistant (MIC >= 128 ug/mL)\nMeropenem: Resistant (MIC >= 16 ug/mL)\nErtapenem: Resistant (MIC >= 8 ug/mL)\nAmikacin: Intermediate (MIC = 16 ug/mL)\nColistin: Susceptible (MIC <= 0.5 ug/mL)\nComment: High-level carbapenem resistance detected. Strict contact isolation advised.",
+      "ocrConfidence": 0.97,
+      "createdAt": "2026-10-02T18:39:39.671Z"
+    }
+  ],
+  "entities": [
+    {
+      "id": "3bf2a224-ea8b-45ac-9ba0-f22da8981196",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "entityType": "organism",
+      "rawValue": "Klebsiella pneumoniae",
+      "normalizedValue": "Klebsiella pneumoniae",
+      "sourceText": "...SURVEILLANCE REPORT Specimen: Urine & Catheter Tip Culture: Klebsiella pneumoniae > 10^5 CFU/mL Phenotypic Markers: MDR (Multi-Drug Resistant...",
+      "pageNumber": 1,
+      "confidence": 0.95,
+      "extractionMethod": "rule_nlp_hybrid",
+      "createdAt": "2026-10-02T18:39:39.673Z"
+    },
+    {
+      "id": "b115d1a7-d0e2-4bed-9ccf-7c8e48f673b7",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "entityType": "culture",
+      "rawValue": "Urine",
+      "normalizedValue": "Specimen: URINE",
+      "sourceText": "...CAL MICROBIOLOGY & RESISTANCE SURVEILLANCE REPORT Specimen: Urine & Catheter Tip Culture: Klebsiella pneumoniae > 10^5 CFU/mL...",
+      "pageNumber": 1,
+      "confidence": 0.9,
+      "extractionMethod": "rule_nlp_hybrid",
+      "createdAt": "2026-10-02T18:39:39.674Z"
+    },
+    {
+      "id": "42afe56b-3dd1-4bb5-8129-bf9749c21780",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "entityType": "culture",
+      "rawValue": "5 CFU/mL",
+      "normalizedValue": "Colony count: 5 CFU/mL",
+      "sourceText": "...n: Urine & Catheter Tip Culture: Klebsiella pneumoniae > 10^5 CFU/mL Phenotypic Markers: MDR (Multi-Drug Resistant), ESBL Produc...",
+      "pageNumber": 1,
+      "confidence": 0.92,
+      "extractionMethod": "rule_nlp_hybrid",
+      "createdAt": "2026-10-02T18:39:39.674Z"
+    },
+    {
+      "id": "728397e9-1211-411c-bba3-6759a37ea059",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "entityType": "resistance_marker",
+      "rawValue": "ESBL",
+      "normalizedValue": "ESBL Producer",
+      "sourceText": "...10^5 CFU/mL Phenotypic Markers: MDR (Multi-Drug Resistant), ESBL Producer positive Molecular Resistance Genes: blaCTX-M-15 p...",
+      "pageNumber": 1,
+      "confidence": 0.96,
+      "extractionMethod": "rule_nlp_hybrid",
+      "createdAt": "2026-10-02T18:39:39.674Z"
+    },
+    {
+      "id": "12a3ba8a-7601-4f32-8a74-744d379d2f37",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "entityType": "resistance_marker",
+      "rawValue": "MDR",
+      "normalizedValue": "MDR (Multidrug-Resistant)",
+      "sourceText": "...re: Klebsiella pneumoniae > 10^5 CFU/mL Phenotypic Markers: MDR (Multi-Drug Resistant), ESBL Producer positive Molecular Re...",
+      "pageNumber": 1,
+      "confidence": 0.96,
+      "extractionMethod": "rule_nlp_hybrid",
+      "createdAt": "2026-10-02T18:39:39.674Z"
+    },
+    {
+      "id": "ddbc9c94-41a3-495e-9223-3c2dcdd77fe2",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "entityType": "resistance_gene",
+      "rawValue": "blaCTX-M-15",
+      "normalizedValue": "blaCTX-M (ESBL gene)",
+      "sourceText": "...istant), ESBL Producer positive Molecular Resistance Genes: blaCTX-M-15 positive, blaNDM-1 positive (Carbapenemase) Susceptibility...",
+      "pageNumber": 1,
+      "confidence": 0.98,
+      "extractionMethod": "rule_nlp_hybrid",
+      "createdAt": "2026-10-02T18:39:39.674Z"
+    },
+    {
+      "id": "b63ab21c-f510-46f6-a38e-c6c8cceb4e27",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "entityType": "resistance_gene",
+      "rawValue": "blaNDM-1",
+      "normalizedValue": "blaNDM (New Delhi Metallo-beta-lactamase)",
+      "sourceText": "...positive Molecular Resistance Genes: blaCTX-M-15 positive, blaNDM-1 positive (Carbapenemase) Susceptibility Testing: Ampicillin...",
+      "pageNumber": 1,
+      "confidence": 0.98,
+      "extractionMethod": "rule_nlp_hybrid",
+      "createdAt": "2026-10-02T18:39:39.674Z"
+    },
+    {
+      "id": "7cb14e73-3995-462f-bb43-340d24903e0b",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "entityType": "susceptibility",
+      "rawValue": "Ampicillin: Resistant",
+      "normalizedValue": "Ampicillin: Resistant",
+      "sourceText": "Ampicillin: Resistant",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "extractionMethod": "rule_nlp_hybrid",
+      "createdAt": "2026-10-02T18:39:39.677Z"
+    },
+    {
+      "id": "651fab75-9567-4cd1-9c23-78c4517b46b1",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "entityType": "susceptibility",
+      "rawValue": "Ceftriaxone: Resistant (MIC >= 64 ug/mL)",
+      "normalizedValue": "Ceftriaxone: Resistant (MIC: 64 µg/mL)",
+      "sourceText": "Ceftriaxone: Resistant (MIC >= 64 ug/mL)",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "extractionMethod": "rule_nlp_hybrid",
+      "createdAt": "2026-10-02T18:39:39.677Z"
+    },
+    {
+      "id": "acf8246c-751f-45bc-93ce-f3fdfa7c8389",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "entityType": "susceptibility",
+      "rawValue": "Ceftazidime: Resistant (MIC >= 32 ug/mL)",
+      "normalizedValue": "Ceftazidime: Resistant (MIC: 32 µg/mL)",
+      "sourceText": "Ceftazidime: Resistant (MIC >= 32 ug/mL)",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "extractionMethod": "rule_nlp_hybrid",
+      "createdAt": "2026-10-02T18:39:39.677Z"
+    },
+    {
+      "id": "f33b1516-708e-41e9-868e-f8c58e0bb4e9",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "entityType": "susceptibility",
+      "rawValue": "Ciprofloxacin: Resistant (MIC >= 4 ug/mL)",
+      "normalizedValue": "Ciprofloxacin: Resistant (MIC: 4 µg/mL)",
+      "sourceText": "Ciprofloxacin: Resistant (MIC >= 4 ug/mL)",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "extractionMethod": "rule_nlp_hybrid",
+      "createdAt": "2026-10-02T18:39:39.677Z"
+    },
+    {
+      "id": "68749519-2368-48b2-8e46-e5c77d3b9983",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "entityType": "susceptibility",
+      "rawValue": "Levofloxacin: Resistant (MIC >= 8 ug/mL)",
+      "normalizedValue": "Levofloxacin: Resistant (MIC: 8 µg/mL)",
+      "sourceText": "Levofloxacin: Resistant (MIC >= 8 ug/mL)",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "extractionMethod": "rule_nlp_hybrid",
+      "createdAt": "2026-10-02T18:39:39.677Z"
+    },
+    {
+      "id": "0a407f25-6022-43cc-93fb-2ed51023ea1a",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "entityType": "susceptibility",
+      "rawValue": "Piperacillin-Tazobactam: Resistant (MIC >= 128 ug/mL)",
+      "normalizedValue": "Piperacillin-Tazobactam: Resistant (MIC: 128 µg/mL)",
+      "sourceText": "Piperacillin-Tazobactam: Resistant (MIC >= 128 ug/mL)",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "extractionMethod": "rule_nlp_hybrid",
+      "createdAt": "2026-10-02T18:39:39.677Z"
+    },
+    {
+      "id": "7c8d38a0-eb90-43a0-b5ea-43c24ab5895e",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "entityType": "susceptibility",
+      "rawValue": "Meropenem: Resistant (MIC >= 16 ug/mL)",
+      "normalizedValue": "Meropenem: Resistant (MIC: 16 µg/mL)",
+      "sourceText": "Meropenem: Resistant (MIC >= 16 ug/mL)",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "extractionMethod": "rule_nlp_hybrid",
+      "createdAt": "2026-10-02T18:39:39.677Z"
+    },
+    {
+      "id": "9aa02ac3-11ba-4c7f-9f58-94c98c858672",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "entityType": "susceptibility",
+      "rawValue": "Ertapenem: Resistant (MIC >= 8 ug/mL)",
+      "normalizedValue": "Ertapenem: Resistant (MIC: 8 µg/mL)",
+      "sourceText": "Ertapenem: Resistant (MIC >= 8 ug/mL)",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "extractionMethod": "rule_nlp_hybrid",
+      "createdAt": "2026-10-02T18:39:39.677Z"
+    },
+    {
+      "id": "1fea0ae5-0530-4244-826d-398db54a986c",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "entityType": "susceptibility",
+      "rawValue": "Amikacin: Intermediate (MIC = 16 ug/mL)",
+      "normalizedValue": "Amikacin: Intermediate (MIC: 16 µg/mL)",
+      "sourceText": "Amikacin: Intermediate (MIC = 16 ug/mL)",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "extractionMethod": "rule_nlp_hybrid",
+      "createdAt": "2026-10-02T18:39:39.677Z"
+    },
+    {
+      "id": "75101998-11be-46df-9537-7ceb13ec5aa3",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "entityType": "susceptibility",
+      "rawValue": "Colistin: Susceptible (MIC <= 0.5 ug/mL)",
+      "normalizedValue": "Colistin: Susceptible (MIC: 0.5 µg/mL)",
+      "sourceText": "Colistin: Susceptible (MIC <= 0.5 ug/mL)",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "extractionMethod": "rule_nlp_hybrid",
+      "createdAt": "2026-10-02T18:39:39.677Z"
+    }
+  ],
+  "susceptibilityResults": [
+    {
+      "id": "ec29bcfb-055c-4e8e-af9c-2995fc2848d3",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "organism": "Klebsiella pneumoniae",
+      "antibiotic": "Ampicillin",
+      "interpretation": "Resistant",
+      "sourceDocumentId": "2e7ff7bc-3920-4d31-ad72-ed52e26a3d1f",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "isUserModified": false
+    },
+    {
+      "id": "ab82b1db-7f2c-4ea8-82e9-cd330b35c2f7",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "organism": "Klebsiella pneumoniae",
+      "antibiotic": "Ceftriaxone",
+      "interpretation": "Resistant",
+      "micValue": "64",
+      "micUnit": "µg/mL",
+      "sourceDocumentId": "2e7ff7bc-3920-4d31-ad72-ed52e26a3d1f",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "isUserModified": false
+    },
+    {
+      "id": "3bae345a-3f1e-445c-ba18-b5249590ad67",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "organism": "Klebsiella pneumoniae",
+      "antibiotic": "Ceftazidime",
+      "interpretation": "Resistant",
+      "micValue": "32",
+      "micUnit": "µg/mL",
+      "sourceDocumentId": "2e7ff7bc-3920-4d31-ad72-ed52e26a3d1f",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "isUserModified": false
+    },
+    {
+      "id": "d88135b8-8531-45da-9503-40353e385186",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "organism": "Klebsiella pneumoniae",
+      "antibiotic": "Ciprofloxacin",
+      "interpretation": "Resistant",
+      "micValue": "4",
+      "micUnit": "µg/mL",
+      "sourceDocumentId": "2e7ff7bc-3920-4d31-ad72-ed52e26a3d1f",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "isUserModified": false
+    },
+    {
+      "id": "2fa294c4-9c12-4843-a98c-56c1326b14ad",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "organism": "Klebsiella pneumoniae",
+      "antibiotic": "Levofloxacin",
+      "interpretation": "Resistant",
+      "micValue": "8",
+      "micUnit": "µg/mL",
+      "sourceDocumentId": "2e7ff7bc-3920-4d31-ad72-ed52e26a3d1f",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "isUserModified": false
+    },
+    {
+      "id": "18f724d6-9a21-4d6f-a5e1-08dc69ac7666",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "organism": "Klebsiella pneumoniae",
+      "antibiotic": "Piperacillin-Tazobactam",
+      "interpretation": "Resistant",
+      "micValue": "128",
+      "micUnit": "µg/mL",
+      "sourceDocumentId": "2e7ff7bc-3920-4d31-ad72-ed52e26a3d1f",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "isUserModified": false
+    },
+    {
+      "id": "36ec5105-f2fc-4380-a105-62adc81bc4fb",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "organism": "Klebsiella pneumoniae",
+      "antibiotic": "Meropenem",
+      "interpretation": "Resistant",
+      "micValue": "16",
+      "micUnit": "µg/mL",
+      "sourceDocumentId": "2e7ff7bc-3920-4d31-ad72-ed52e26a3d1f",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "isUserModified": false
+    },
+    {
+      "id": "490b9e05-eac8-4d03-833f-79ee513373ec",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "organism": "Klebsiella pneumoniae",
+      "antibiotic": "Ertapenem",
+      "interpretation": "Resistant",
+      "micValue": "8",
+      "micUnit": "µg/mL",
+      "sourceDocumentId": "2e7ff7bc-3920-4d31-ad72-ed52e26a3d1f",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "isUserModified": false
+    },
+    {
+      "id": "5636693c-78ff-44bd-a5c9-ce2c11ea54af",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "organism": "Klebsiella pneumoniae",
+      "antibiotic": "Amikacin",
+      "interpretation": "Intermediate",
+      "micValue": "16",
+      "micUnit": "µg/mL",
+      "sourceDocumentId": "2e7ff7bc-3920-4d31-ad72-ed52e26a3d1f",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "isUserModified": false
+    },
+    {
+      "id": "db67b403-8458-46c8-89ea-d25b91d2d5e3",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "organism": "Klebsiella pneumoniae",
+      "antibiotic": "Colistin",
+      "interpretation": "Susceptible",
+      "micValue": "0.5",
+      "micUnit": "µg/mL",
+      "sourceDocumentId": "2e7ff7bc-3920-4d31-ad72-ed52e26a3d1f",
+      "pageNumber": 1,
+      "confidence": 0.93,
+      "isUserModified": false
+    }
+  ],
+  "patientInputs": [
+    {
+      "id": "cb00067e-5d27-4df1-98a6-a09b3679e1e3",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "symptoms": "Fever, flank discomfort, cloudy urine, fatigue continuing for 16 days.",
+      "symptomDuration": "more_than_14_days",
+      "severity": "severe",
+      "infectionType": "urinary",
+      "previousAntibioticExposure": "frequent_repeated",
+      "treatmentDuration": 21,
+      "courseCompletion": "stopped_early",
+      "persistentInfection": "recurrent",
+      "additionalNotes": "Multiple courses of oral ciprofloxacin and augmentin failed over past 3 months.",
+      "createdAt": "2026-10-02T18:39:39.680Z"
+    }
+  ],
+  "riskFeatures": [
+    {
+      "id": "8b21ed2b-c70a-491e-81d2-7b0e2381cf28",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "featureName": "documented_resistance",
+      "rawValue": "ESBL Producer, MDR (Multidrug-Resistant)",
+      "normalizedContribution": 0.95,
+      "weight": 10,
+      "available": true,
+      "evidence": "...10^5 CFU/mL Phenotypic Markers: MDR (Multi-Drug Resistant), ESBL Producer positive Molecular Resistance Genes: blaCTX-M-15 p...",
+      "confidence": 0.96,
+      "reason": "Explicit antimicrobial resistance markers were documented in the clinical report (ESBL Producer, MDR (Multidrug-Resistant)).",
+      "createdAt": "2026-10-02T18:39:39.682Z"
+    },
+    {
+      "id": "8b4f316d-da2b-42a6-ba2a-fa0c7c0fd440",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "featureName": "susceptibility_resistance",
+      "rawValue": "8 R, 1 I, 1 S (Total: 10)",
+      "normalizedContribution": 0.92,
+      "weight": 10,
+      "available": true,
+      "evidence": "Antimicrobial susceptibility profile: Ampicillin (Resistant), Ceftriaxone (Resistant), Ceftazidime (Resistant), Ciprofloxacin (Resistant)",
+      "confidence": 0.94,
+      "reason": "Susceptibility panel demonstrated high resistance (8 resistant of 10 tested), including key reserve antimicrobials.",
+      "createdAt": "2026-10-02T18:39:39.682Z"
+    },
+    {
+      "id": "2a8f3fed-8c5d-4d4b-b3f1-9099a4f3319b",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "featureName": "resistance_gene",
+      "rawValue": "blaCTX-M (ESBL gene), blaNDM (New Delhi Metallo-beta-lactamase)",
+      "normalizedContribution": 1,
+      "weight": 10,
+      "available": true,
+      "evidence": "...istant), ESBL Producer positive Molecular Resistance Genes: blaCTX-M-15 positive, blaNDM-1 positive (Carbapenemase) Susceptibility...",
+      "confidence": 0.98,
+      "reason": "Specific molecular resistance genes were explicitly detected (blaCTX-M (ESBL gene), blaNDM (New Delhi Metallo-beta-lactamase)).",
+      "createdAt": "2026-10-02T18:39:39.682Z"
+    },
+    {
+      "id": "2cb74145-ebcb-4f84-8050-9a34d5168101",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "featureName": "organism_signal",
+      "rawValue": "Klebsiella pneumoniae",
+      "normalizedContribution": 0.7,
+      "weight": 7,
+      "available": true,
+      "evidence": "...SURVEILLANCE REPORT Specimen: Urine & Catheter Tip Culture: Klebsiella pneumoniae > 10^5 CFU/mL Phenotypic Markers: MDR (Multi-Drug Resistant...",
+      "confidence": 0.95,
+      "reason": "Isolated pathogen (Klebsiella pneumoniae) belongs to high-priority pathogen groups associated with antimicrobial resistance challenges.",
+      "createdAt": "2026-10-02T18:39:39.682Z"
+    },
+    {
+      "id": "62ac4d80-34c1-47b0-874a-5ded9f1e81ba",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "featureName": "culture_signal",
+      "rawValue": "Specimen: URINE; Colony count: 5 CFU/mL",
+      "normalizedContribution": 0.55,
+      "weight": 5,
+      "available": true,
+      "evidence": "...CAL MICROBIOLOGY & RESISTANCE SURVEILLANCE REPORT Specimen: Urine & Catheter Tip Culture: Klebsiella pneumoniae > 10^5 CFU/mL...",
+      "confidence": 0.9,
+      "reason": "Microbiology culture documented viable bacterial growth (Specimen: URINE; Colony count: 5 CFU/mL).",
+      "createdAt": "2026-10-02T18:39:39.682Z"
+    },
+    {
+      "id": "73436558-a09f-4b70-825f-db62b13f33ec",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "featureName": "repeated_antibiotic_exposure",
+      "rawValue": "frequent repeated",
+      "normalizedContribution": 0.8,
+      "weight": 7,
+      "available": true,
+      "evidence": "User-provided medical history: frequent repeated",
+      "confidence": 0.9,
+      "reason": "Frequent or repeated antimicrobial exposure documented, which strongly selects for resistant flora.",
+      "createdAt": "2026-10-02T18:39:39.682Z"
+    },
+    {
+      "id": "3f08d7ce-f82f-467d-a5af-46e2f7b63b06",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "featureName": "persistent_infection",
+      "rawValue": "recurrent",
+      "normalizedContribution": 0.75,
+      "weight": 6,
+      "available": true,
+      "evidence": "Clinical trajectory: recurrent",
+      "confidence": 0.88,
+      "reason": "Recurrent episode reported, indicating potential treatment failure or bacterial persistence.",
+      "createdAt": "2026-10-02T18:39:39.682Z"
+    },
+    {
+      "id": "35605ca8-460e-4f20-a1de-9f550da3844f",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "featureName": "incomplete_treatment",
+      "rawValue": "stopped early",
+      "normalizedContribution": 0.7,
+      "weight": 5,
+      "available": true,
+      "evidence": "Course completion: stopped early",
+      "confidence": 0.85,
+      "reason": "Antibiotic therapy stopped early, which can facilitate survival of sub-populations with reduced susceptibility.",
+      "createdAt": "2026-10-02T18:39:39.682Z"
+    },
+    {
+      "id": "0864fa3e-89a3-473c-9b9d-339c55a9b459",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "featureName": "prolonged_treatment",
+      "rawValue": "21 days",
+      "normalizedContribution": 0.75,
+      "weight": 4,
+      "available": true,
+      "evidence": "Duration: 21 days",
+      "confidence": 0.85,
+      "reason": "Prolonged antimicrobial treatment duration (21 days) increases selective pressure.",
+      "createdAt": "2026-10-02T18:39:39.682Z"
+    },
+    {
+      "id": "f1e9e2d3-15c2-47be-96fb-91c493190288",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "featureName": "symptom_duration",
+      "rawValue": "more than 14 days",
+      "normalizedContribution": 0.8,
+      "weight": 3,
+      "available": true,
+      "evidence": "Duration: more than 14 days",
+      "confidence": 0.85,
+      "reason": "Protracted symptom duration (>14 days) suggests potential refractory condition.",
+      "createdAt": "2026-10-02T18:39:39.682Z"
+    },
+    {
+      "id": "7bd0977c-f08f-4564-af4a-9b176ca7fdd1",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "featureName": "symptom_severity",
+      "rawValue": "severe",
+      "normalizedContribution": 0.8,
+      "weight": 3,
+      "available": true,
+      "evidence": "Severity: severe",
+      "confidence": 0.85,
+      "reason": "Severe clinical symptomatology documented.",
+      "createdAt": "2026-10-02T18:39:39.682Z"
+    }
+  ],
+  "riskResults": [
+    {
+      "id": "86ee77d9-d00e-4f55-a30d-5ddf826ca64b",
+      "analysisId": "5a09d55f-133c-4334-9f2c-93929eb128d0",
+      "riskPercentage": 82.5,
+      "riskCategory": "High",
+      "modelVersion": "risk-model-0.1.0",
+      "evidenceCoverage": "Broad",
+      "coveragePercentage": 100,
+      "calculatedAt": "2026-10-02T18:39:39.683Z",
+      "majorFactors": [
+        {
+          "name": "Molecular Resistance Gene",
+          "featureKey": "resistance_gene",
+          "contribution": 1,
+          "weight": 10,
+          "weightedContribution": 10,
+          "impact": "high",
+          "reason": "Specific molecular resistance genes were explicitly detected (blaCTX-M (ESBL gene), blaNDM (New Delhi Metallo-beta-lactamase)).",
+          "evidence": {
+            "document": "Uploaded Medical Report",
+            "page": 1,
+            "snippet": "...istant), ESBL Producer positive Molecular Resistance Genes: blaCTX-M-15 positive, blaNDM-1 positive (Carbapenemase) Susceptibility...",
+            "confidence": 0.98
+          }
+        },
+        {
+          "name": "Documented Resistance",
+          "featureKey": "documented_resistance",
+          "contribution": 0.95,
+          "weight": 10,
+          "weightedContribution": 9.5,
+          "impact": "high",
+          "reason": "Explicit antimicrobial resistance markers were documented in the clinical report (ESBL Producer, MDR (Multidrug-Resistant)).",
+          "evidence": {
+            "document": "Uploaded Medical Report",
+            "page": 1,
+            "snippet": "...10^5 CFU/mL Phenotypic Markers: MDR (Multi-Drug Resistant), ESBL Producer positive Molecular Resistance Genes: blaCTX-M-15 p...",
+            "confidence": 0.96
+          }
+        },
+        {
+          "name": "Susceptibility Resistance Pattern",
+          "featureKey": "susceptibility_resistance",
+          "contribution": 0.92,
+          "weight": 10,
+          "weightedContribution": 9.2,
+          "impact": "high",
+          "reason": "Susceptibility panel demonstrated high resistance (8 resistant of 10 tested), including key reserve antimicrobials.",
+          "evidence": {
+            "document": "Uploaded Medical Report",
+            "page": 1,
+            "snippet": "Antimicrobial susceptibility profile: Ampicillin (Resistant), Ceftriaxone (Resistant), Ceftazidime (Resistant), Ciprofloxacin (Resistant)",
+            "confidence": 0.94
+          }
+        },
+        {
+          "name": "Repeated Antibiotic Exposure",
+          "featureKey": "repeated_antibiotic_exposure",
+          "contribution": 0.8,
+          "weight": 7,
+          "weightedContribution": 5.6,
+          "impact": "high",
+          "reason": "Frequent or repeated antimicrobial exposure documented, which strongly selects for resistant flora.",
+          "evidence": {
+            "document": "Uploaded Medical Report",
+            "page": 1,
+            "snippet": "User-provided medical history: frequent repeated",
+            "confidence": 0.9
+          }
+        },
+        {
+          "name": "Pathogen Species Profile",
+          "featureKey": "organism_signal",
+          "contribution": 0.7,
+          "weight": 7,
+          "weightedContribution": 4.9,
+          "impact": "high",
+          "reason": "Isolated pathogen (Klebsiella pneumoniae) belongs to high-priority pathogen groups associated with antimicrobial resistance challenges.",
+          "evidence": {
+            "document": "Uploaded Medical Report",
+            "page": 1,
+            "snippet": "...SURVEILLANCE REPORT Specimen: Urine & Catheter Tip Culture: Klebsiella pneumoniae > 10^5 CFU/mL Phenotypic Markers: MDR (Multi-Drug Resistant...",
+            "confidence": 0.95
+          }
+        }
+      ],
+      "limitations": [
+        "This is a prototype risk estimate generated from available report and user information.",
+        "It is NOT a clinically validated probability, confirmed diagnosis, or antibiotic prescription.",
+        "Laboratory culture and antimicrobial susceptibility testing interpreted by a qualified physician remain necessary.",
+        "Do not start, stop, extend, or change antibiotics based solely on this result."
+      ]
+    }
+  ],
+  "auditEvents": [],
+  "activeWeights": {
+    "documented_resistance": 10,
+    "susceptibility_resistance": 10,
+    "resistance_gene": 10,
+    "organism_signal": 7,
+    "repeated_antibiotic_exposure": 7,
+    "persistent_infection": 6,
+    "recurrent_infection": 6,
+    "incomplete_treatment": 5,
+    "prolonged_treatment": 4,
+    "laboratory_signal": 4,
+    "symptom_duration": 3,
+    "symptom_severity": 3,
+    "culture_signal": 5
+  }
+}

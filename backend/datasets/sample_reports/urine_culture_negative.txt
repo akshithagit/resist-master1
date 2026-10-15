@@ -1,0 +1,18 @@
+DIAGNOSTIC PATHOLOGY REPORT
+==================================================
+Specimen: Clean Catch Urine
+Clinical Indication: Routine Pre-operative Screening
+Result Date: 2026-10-15
+
+MICROSCOPY:
+WBC: 1-2 / HPF (Normal)
+RBC: 0-1 / HPF (Normal)
+Bacteria: None seen
+
+CULTURE:
+No bacterial growth after 48 hours of aerobic incubation at 37°C.
+Status: Sterile / No significant bacteriuria.
+
+INTERPRETATION:
+Negative for urinary tract infection. No antimicrobial susceptibility testing indicated.
+Resistance not detected.

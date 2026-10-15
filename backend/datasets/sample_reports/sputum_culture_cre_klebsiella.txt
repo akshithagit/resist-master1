@@ -1,0 +1,26 @@
+HOSPITAL CLINICAL PATHOLOGY DEPARTMENT
+==================================================
+Specimen: Sputum (Expectorated)
+Collection: 2026-10-14
+Suspected Infection: Hospital-Acquired Pneumonia (HAP)
+
+DIRECT SMEAR:
+Gram Stain: Abundant Gram-negative encapsulated bacilli, many neutrophils.
+
+CULTURE:
+Heavy, confluent growth of Klebsiella pneumoniae.
+
+SUSCEPTIBILITY PANEL:
+Ceftriaxone: Resistant
+Cefepime: Resistant
+Piperacillin-Tazobactam: Resistant
+Ciprofloxacin: Resistant
+Meropenem: Resistant
+Imipenem: Resistant
+Colistin: Susceptible (MIC 1.0 ug/mL)
+Amikacin: Intermediate
+
+COMMENTS:
+Isolate demonstrates resistance to all beta-lactams including carbapenems.
+Carbapenem-Resistant Enterobacteriaceae (CRE) protocol initiated.
+Carbapenemase gene blaKPC detected by molecular assay.

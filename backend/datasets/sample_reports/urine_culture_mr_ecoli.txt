@@ -1,0 +1,37 @@
+CLINICAL MICROBIOLOGY LABORATORY REPORT
+==================================================
+Patient ID: PT-90421
+Specimen: Urine (Clean Catch Midstream)
+Collection Date: 2026-10-12
+Clinical Indications: Dysuria, supra-pubic pain, frequency (3 days)
+
+MICROSCOPY:
+WBC: 45-50 / HPF
+RBC: 5-8 / HPF
+Bacteria: Plentiful Gram-negative bacilli
+Epithelial Cells: Few (indicates clean sample)
+
+CULTURE FINDINGS:
+Organism Isolated: Escherichia coli
+Colony Count: > 100,000 CFU/mL (Significant bacteriuria)
+
+ANTIMICROBIAL SUSCEPTIBILITY TEST (AST):
+Antibiotic                         MIC (ug/mL)    Interpretation
+------------------------------------------------------------------
+Ciprofloxacin                      >= 4           Resistant
+Levofloxacin                       >= 8           Resistant
+Trimethoprim-Sulfamethoxazole      >= 4/76        Resistant
+Ceftriaxone                        >= 32          Resistant
+Amoxicillin-Clavulanate            16/8           Intermediate
+Nitrofurantoin                     <= 16          Susceptible
+Meropenem                          <= 0.25        Susceptible
+Amikacin                           <= 4           Susceptible
+
+PHENOTYPIC CONFIRMATION:
+Extended-Spectrum Beta-Lactamase (ESBL): Phenotypically Confirmed
+Resistance Genes / PCR: blaCTX-M-15 detected
+
+PATHOLOGIST NOTES:
+Multidrug-resistant (MDR) isolate showing resistance to fluoroquinolones,
+co-trimoxazole, and 3rd generation cephalosporins. Nitrofurantoin remains
+active in vitro for lower urinary tract coverage.
