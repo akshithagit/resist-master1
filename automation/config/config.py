@@ -31,7 +31,7 @@ if not BASE_URL:
         BASE_URL = f"https://{repo_owner}.github.io/{repo_name}/"
     else:
         # Default placeholder compliant with template syntax
-        BASE_URL = "https://akshithagit.github.io/resist/"
+        BASE_URL = "https://akshithagit.github.io/resist-master1/"
 
 # Normalize BASE_URL ensuring trailing slash
 if not BASE_URL.endswith("/"):
