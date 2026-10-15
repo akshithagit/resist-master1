@@ -1,7 +1,6 @@
 """
 ResistAI - Lightweight Clinical NLP & Medical Entity Extraction Engine
-Extracts bacterial organisms, antibiotics, susceptibility results, resistance genes,
-culture findings, and patient clinical history using medical dictionaries and contextual rules.
+Precompiles medical dictionaries and contextual rules for ultra-high throughput load handling.
 Strictly handles negation, uncertainty, and unknown values without remote APIs.
 """
 
@@ -73,110 +72,138 @@ NEGATION_PATTERNS = [
     r"mixed\s+growth\s+suggestive\s+of\s+contamination"
 ]
 
-
 class MedicalNLPEngine:
+    def __init__(self):
+        # Precompile all regular expressions for maximum speed under concurrency
+        self.neg_compiled = [re.compile(p, re.IGNORECASE) for p in NEGATION_PATTERNS]
+        self.org_compiled = [
+            (org, re.compile(r"\b" + re.escape(alias) + r"\b", re.IGNORECASE))
+            for org in ORGANISMS
+            for alias in org["aliases"]
+        ]
+        self.abx_compiled = [
+            (
+                abx,
+                re.compile(
+                    r"\b" + re.escape(alias) +
+                    r"\s*[:=-]?\s*(?:MIC\s*[:=<>]?\s*[\d\.]+\s*(?:ug/ml|mg/l)?\s*)?" +
+                    r"\b(resistant|susceptible|intermediate|sensitive|r|s|i)\b",
+                    re.IGNORECASE
+                )
+            )
+            for abx in ANTIBIOTICS
+            for alias in abx["aliases"]
+        ]
+        self.marker_compiled = [
+            (marker, re.compile(r"\b" + re.escape(alias) + r"\b", re.IGNORECASE))
+            for marker in RESISTANCE_MARKERS
+            for alias in marker["aliases"]
+        ]
+        self.gene_compiled = [
+            (gene, re.compile(r"\b" + re.escape(alias) + r"\b", re.IGNORECASE))
+            for gene in RESISTANCE_GENES
+            for alias in gene["aliases"]
+        ]
+        self.specimen_urine = re.compile(r"\burine\b|\bmsu\b|\bmidstream\b|\binitialstream\b", re.IGNORECASE)
+        self.specimen_blood = re.compile(r"\bblood\b|\bblood\s+culture\b", re.IGNORECASE)
+        self.specimen_sputum = re.compile(r"\bsputum\b|\btracheal\b|\bbronchoalveolar\b", re.IGNORECASE)
+        self.specimen_wound = re.compile(r"\bwound\b|\bpus\b|\babscess\b", re.IGNORECASE)
+        self.specimen_swab = re.compile(r"\bswab\b|\bnasopharyngeal\b", re.IGNORECASE)
+        self.not_detected_pat = re.compile(r"not\s+detected|negative|nil|absent", re.IGNORECASE)
+        self.neg_before_pat = re.compile(r"no\s+|negative\s+for\s+|not\s+", re.IGNORECASE)
+
     def extract_entities(self, text: str) -> Dict[str, Any]:
         """
-        Parses clinical text and extracts structured medical entities.
-        Includes negation checks, uncertainty recognition, and AST mapping.
+        Parses clinical text and extracts structured medical entities using precompiled matchers.
         """
         clean_text = text.lower()
         
         # 1. Check for global negation / no-growth findings
-        is_negative_growth = any(re.search(pat, clean_text) for pat in NEGATION_PATTERNS[:4])
-        is_contamination = any(re.search(pat, clean_text) for pat in NEGATION_PATTERNS[7:])
+        is_negative_growth = any(p.search(clean_text) for p in self.neg_compiled[:4])
+        is_contamination = any(p.search(clean_text) for p in self.neg_compiled[7:])
         
         # 2. Extract Organism
         detected_organism = None
-        for org in ORGANISMS:
-            for alias in org["aliases"]:
-                pattern = r"\b" + re.escape(alias) + r"\b"
-                match = re.search(pattern, clean_text)
-                if match:
-                    # Verify not preceded by negation like "no e. coli detected"
-                    start = max(0, match.start() - 30)
-                    preceding = clean_text[start:match.start()]
-                    if not re.search(r"no\s+|negative\s+for\s+|not\s+", preceding):
-                        detected_organism = org
-                        break
-            if detected_organism:
-                break
+        for org, pattern in self.org_compiled:
+            match = pattern.search(clean_text)
+            if match:
+                start = max(0, match.start() - 30)
+                preceding = clean_text[start:match.start()]
+                if not self.neg_before_pat.search(preceding):
+                    detected_organism = org
+                    break
 
         # 3. Extract Susceptibility (AST) Panel
         susceptibility = []
-        for abx in ANTIBIOTICS:
-            for alias in abx["aliases"]:
-                # Look for patterns like: "Ciprofloxacin: Resistant" or "Cipro R" or "Nitrofurantoin (S)"
-                pat = (
-                    r"\b" + re.escape(alias) +
-                    r"\s*[:=-]?\s*(?:MIC\s*[:=<>]?\s*[\d\.]+\s*(?:ug/ml|mg/l)?\s*)?" +
-                    r"\b(resistant|susceptible|intermediate|sensitive|r|s|i)\b"
-                )
-                match = re.search(pat, clean_text)
-                if match:
-                    raw_interp = match.group(1).lower()
-                    if raw_interp in ["resistant", "r"]:
-                        interp = "Resistant"
-                    elif raw_interp in ["susceptible", "sensitive", "s"]:
-                        interp = "Susceptible"
-                    elif raw_interp in ["intermediate", "i"]:
-                        interp = "Intermediate"
-                    else:
-                        interp = "Unknown"
-                        
-                    susceptibility.append({
-                        "antibiotic": abx["name"],
-                        "interpretation": interp,
-                        "class": abx["class"],
-                        "source_text": match.group(0)
-                    })
-                    break
+        seen_abx = set()
+        for abx, pattern in self.abx_compiled:
+            if abx["name"] in seen_abx:
+                continue
+            match = pattern.search(clean_text)
+            if match:
+                seen_abx.add(abx["name"])
+                raw_interp = match.group(1).lower()
+                if raw_interp in ["resistant", "r"]:
+                    interp = "Resistant"
+                elif raw_interp in ["susceptible", "sensitive", "s"]:
+                    interp = "Susceptible"
+                elif raw_interp in ["intermediate", "i"]:
+                    interp = "Intermediate"
+                else:
+                    interp = "Unknown"
+                    
+                susceptibility.append({
+                    "antibiotic": abx["name"],
+                    "interpretation": interp,
+                    "class": abx["class"],
+                    "source_text": match.group(0)
+                })
 
         # 4. Extract Resistance Markers & Genes
         detected_markers = []
-        for marker in RESISTANCE_MARKERS:
-            for alias in marker["aliases"]:
-                pat = r"\b" + re.escape(alias) + r"\b"
-                match = re.search(pat, clean_text)
-                if match:
-                    # Check for negation: "ESBL negative" or "ESBL: Not detected"
-                    end = min(len(clean_text), match.end() + 30)
-                    after = clean_text[match.end():end]
-                    start = max(0, match.start() - 25)
-                    before = clean_text[start:match.start()]
-                    
-                    if not re.search(r"not\s+detected|negative|nil|absent", after) and \
-                       not re.search(r"no\s+|negative\s+for\s+", before):
-                        detected_markers.append({
-                            "name": marker["name"],
-                            "weight": marker["weight"],
-                            "source_text": match.group(0)
-                        })
-                    break
-
-        detected_genes = []
-        for gene in RESISTANCE_GENES:
-            for alias in gene["aliases"]:
-                pat = r"\b" + re.escape(alias) + r"\b"
-                match = re.search(pat, clean_text)
-                if match:
-                    detected_genes.append({
-                        "name": gene["name"],
+        seen_markers = set()
+        for marker, pattern in self.marker_compiled:
+            if marker["name"] in seen_markers:
+                continue
+            match = pattern.search(clean_text)
+            if match:
+                end = min(len(clean_text), match.end() + 30)
+                after = clean_text[match.end():end]
+                start = max(0, match.start() - 25)
+                before = clean_text[start:match.start()]
+                
+                if not self.not_detected_pat.search(after) and not self.neg_before_pat.search(before):
+                    seen_markers.add(marker["name"])
+                    detected_markers.append({
+                        "name": marker["name"],
+                        "weight": marker["weight"],
                         "source_text": match.group(0)
                     })
-                    break
+
+        detected_genes = []
+        seen_genes = set()
+        for gene, pattern in self.gene_compiled:
+            if gene["name"] in seen_genes:
+                continue
+            match = pattern.search(clean_text)
+            if match:
+                seen_genes.add(gene["name"])
+                detected_genes.append({
+                    "name": gene["name"],
+                    "source_text": match.group(0)
+                })
 
         # 5. Extract Specimen Type
         specimen = "Unknown"
-        if re.search(r"\burine\b|\bmsu\b|\bmidstream\b|\binitialstream\b", clean_text):
+        if self.specimen_urine.search(clean_text):
             specimen = "Initialstream"
-        elif re.search(r"\bblood\b|\bblood\s+culture\b", clean_text):
+        elif self.specimen_blood.search(clean_text):
             specimen = "Blood"
-        elif re.search(r"\bsputum\b|\btracheal\b|\bbronchoalveolar\b", clean_text):
+        elif self.specimen_sputum.search(clean_text):
             specimen = "Sputum"
-        elif re.search(r"\bwound\b|\bpus\b|\babscess\b", clean_text):
+        elif self.specimen_wound.search(clean_text):
             specimen = "Wound / Pus"
-        elif re.search(r"\bswab\b|\bnasopharyngeal\b", clean_text):
+        elif self.specimen_swab.search(clean_text):
             specimen = "Swab"
 
         return {

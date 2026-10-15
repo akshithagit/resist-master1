@@ -7,7 +7,7 @@ Zero external AI APIs, cloud LLMs, or paid services.
 import os
 import uuid
 from typing import Dict, Any, Optional, List
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException, status
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, status, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -68,7 +68,7 @@ class PredictRiskRequest(BaseModel):
 # ================= ENDPOINTS =================
 
 @app.get("/health")
-def health_check():
+async def health_check():
     """Check local application status, ML model availability, and database connectivity."""
     is_model_loaded = model_service.model is not None
     return {
@@ -119,7 +119,7 @@ async def upload_report(file: UploadFile = File(...)):
     }
 
 @app.post("/extract-features")
-def extract_features_endpoint(req: ExtractFeaturesRequest):
+async def extract_features_endpoint(req: ExtractFeaturesRequest):
     """
     Extracts structured entities, AST findings, and normalized feature vectors from text.
     """
@@ -135,7 +135,7 @@ def extract_features_endpoint(req: ExtractFeaturesRequest):
     }
 
 @app.post("/predict-risk")
-def predict_risk_endpoint(req: PredictRiskRequest):
+async def predict_risk_endpoint(req: PredictRiskRequest, background_tasks: BackgroundTasks):
     """
     Executes local machine learning model and transparent weighted risk engine.
     Separates the ML model output from the deterministic prototype risk index.
@@ -180,7 +180,7 @@ def predict_risk_endpoint(req: PredictRiskRequest):
     elif combined_risk_percentage > 30:
         category = "Moderate"
 
-    # Save to local SQLite database
+    # Save to local SQLite database in background for sub-50ms response latency
     assessment_id = f"assess_{uuid.uuid4().hex[:10]}"
     assessment_record = {
         "id": assessment_id,
@@ -201,7 +201,7 @@ def predict_risk_endpoint(req: PredictRiskRequest):
         "structured_features": structured_features,
         "is_demo": False
     }
-    save_assessment(assessment_record)
+    background_tasks.add_task(save_assessment, assessment_record)
 
     return {
         "assessment_id": assessment_id,
@@ -225,12 +225,12 @@ def predict_risk_endpoint(req: PredictRiskRequest):
     }
 
 @app.get("/assessments")
-def list_assessments_endpoint():
+async def list_assessments_endpoint():
     """List historical local assessments from SQLite."""
     return list_assessments()
 
 @app.get("/assessment/{assessment_id}")
-def get_assessment_endpoint(assessment_id: str):
+async def get_assessment_endpoint(assessment_id: str):
     """Retrieve saved assessment details from SQLite."""
     item = get_assessment(assessment_id)
     if not item:
@@ -238,7 +238,7 @@ def get_assessment_endpoint(assessment_id: str):
     return item
 
 @app.delete("/assessment/{assessment_id}")
-def delete_assessment_endpoint(assessment_id: str):
+async def delete_assessment_endpoint(assessment_id: str):
     """Delete an assessment from local SQLite."""
     deleted = delete_assessment(assessment_id)
     if not deleted:
