@@ -24,6 +24,30 @@ if (fs.existsSync(envPath)) {
 /** @type {import('expo/metro-config').MetroConfig} */
 const config = getDefaultConfig(__dirname);
 
+const canvasShimPath = path.resolve(__dirname, 'src/shims/canvas-mock.js');
+
+config.resolver = {
+  ...config.resolver,
+  extraNodeModules: {
+    ...config.resolver?.extraNodeModules,
+    canvas: canvasShimPath,
+  },
+  resolveRequest: (context, moduleName, platform) => {
+    if (
+      moduleName === 'canvas' ||
+      moduleName.includes('canvas.node') ||
+      moduleName.endsWith('canvas.node') ||
+      (context.originModulePath && context.originModulePath.includes('node_modules' + path.sep + 'canvas'))
+    ) {
+      return {
+        filePath: canvasShimPath,
+        type: 'sourceFile',
+      };
+    }
+    return context.resolveRequest(context, moduleName, platform);
+  },
+};
+
 const auth0Domain = process.env.EXPO_PUBLIC_AUTH0_DOMAIN || 'dev-m66oxx8o52l3edzx.us.auth0.com';
 const originalEnhanceMiddleware = config.server?.enhanceMiddleware;
 
