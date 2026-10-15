@@ -39,3 +39,15 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Python & Automation
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+automation/logs/*.log
+automation/reports/*.xlsx
+automation/reports/*.html
+automation/reports/*.json
+automation/reports/*.md
+automation/screenshots/*.png

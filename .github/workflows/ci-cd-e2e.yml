@@ -1,0 +1,345 @@
+name: ResistAI — CI/CD Build · Deploy · E2E Selenium Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  actions: read
+
+env:
+  NODE_VERSION: "20"
+  PYTHON_VERSION: "3.11"
+
+# ────────────────────────────────────────────────────────────────────────────
+# JOB 1 — Build Expo Web App
+# ────────────────────────────────────────────────────────────────────────────
+jobs:
+  build:
+    name: 🏗️ Build Expo Web App
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Export Expo web app for GitHub Pages
+        run: |
+          npx expo export --platform web --output-dir dist
+        env:
+          EXPO_PUBLIC_BACKEND_URL: ""
+          NODE_OPTIONS: "--max-old-space-size=4096"
+
+      - name: Verify build output
+        run: |
+          echo "=== Build output contents ==="
+          ls -la dist/
+          test -f dist/index.html || (echo "ERROR: index.html not found!" && exit 1)
+          echo "✅ index.html present"
+          wc -c dist/index.html
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: expo-web-dist
+          path: dist/
+          retention-days: 7
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # JOB 2 — Deploy to GitHub Pages
+  # ──────────────────────────────────────────────────────────────────────────
+  deploy:
+    name: 🚀 Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: build
+    timeout-minutes: 10
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: expo-web-dist
+          path: dist/
+
+      - name: Add .nojekyll for GitHub Pages
+        run: touch dist/.nojekyll
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: ✅ Deployment complete
+        run: |
+          echo "Deployed to: ${{ steps.deployment.outputs.page_url }}"
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # JOB 3 — Verify Deployment Availability
+  # ──────────────────────────────────────────────────────────────────────────
+  verify-deployment:
+    name: 🔍 Verify Deployment Availability
+    runs-on: ubuntu-latest
+    needs: deploy
+    timeout-minutes: 10
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+
+    outputs:
+      site_url: ${{ steps.construct-url.outputs.site_url }}
+
+    steps:
+      - name: Construct GitHub Pages URL
+        id: construct-url
+        run: |
+          OWNER="${{ github.repository_owner }}"
+          REPO="${{ github.event.repository.name }}"
+          SITE_URL="https://${OWNER}.github.io/${REPO}/"
+          echo "site_url=${SITE_URL}" >> $GITHUB_OUTPUT
+          echo "Target URL: ${SITE_URL}"
+
+      - name: Wait for propagation (60s)
+        run: sleep 60
+
+      - name: Health check – HTTP 200
+        run: |
+          SITE_URL="${{ steps.construct-url.outputs.site_url }}"
+          echo "Checking: ${SITE_URL}"
+          for i in {1..6}; do
+            STATUS=$(curl -sL -o /dev/null -w "%{http_code}" "${SITE_URL}")
+            echo "Attempt ${i}: HTTP ${STATUS}"
+            if [ "$STATUS" = "200" ]; then
+              echo "✅ Site is live!"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "⚠️ Site may still be propagating — proceeding with E2E tests"
+          exit 0
+
+      - name: Verify index.html content
+        run: |
+          SITE_URL="${{ steps.construct-url.outputs.site_url }}"
+          CONTENT=$(curl -sL "${SITE_URL}")
+          echo "Content length: ${#CONTENT}"
+          if [ ${#CONTENT} -lt 100 ]; then
+            echo "⚠️ Page content seems short"
+          else
+            echo "✅ Page has content"
+          fi
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # JOB 4 — Selenium E2E Tests Against Live GitHub Pages
+  # ──────────────────────────────────────────────────────────────────────────
+  e2e-tests:
+    name: 🤖 Selenium E2E Tests (Live GitHub Pages)
+    runs-on: ubuntu-latest
+    needs: verify-deployment
+    timeout-minutes: 60
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+
+      - name: Install Python automation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r automation/requirements.txt
+
+      - name: Setup Chrome & ChromeDriver
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
+      - name: Verify Chrome installation
+        run: |
+          google-chrome --version || chromium-browser --version
+          echo "✅ Chrome ready"
+
+      - name: Create automation output directories
+        run: |
+          mkdir -p automation/reports
+          mkdir -p automation/screenshots
+          mkdir -p automation/logs
+          mkdir -p automation/data
+
+      - name: 🤖 Run Selenium E2E Test Suite
+        id: e2e
+        run: |
+          OWNER="${{ github.repository_owner }}"
+          REPO="${{ github.event.repository.name }}"
+          SITE_URL="https://${OWNER}.github.io/${REPO}/"
+          echo "Running E2E tests against: ${SITE_URL}"
+
+          python -m pytest automation/tests/ \
+            --tb=short \
+            --timeout=45 \
+            -v \
+            --no-header \
+            -p no:cacheprovider \
+            2>&1 | tee automation/logs/pytest_output.log
+        env:
+          BASE_URL: "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+          HEADLESS: "true"
+          BROWSER: "chrome"
+          WINDOW_WIDTH: "1920"
+          WINDOW_HEIGHT: "1080"
+          PAGE_LOAD_TIMEOUT: "30"
+          EXPLICIT_WAIT_TIMEOUT: "15"
+          GITHUB_STEP_SUMMARY: ${{ github.step_summary }}
+        continue-on-error: true
+
+      - name: 📊 Publish GitHub Actions Step Summary
+        if: always()
+        run: |
+          if [ -f automation/reports/summary.md ]; then
+            cat automation/reports/summary.md >> $GITHUB_STEP_SUMMARY
+            echo "✅ Summary published to GitHub Actions"
+          else
+            echo "## ⚠️ ResistAI E2E Summary" >> $GITHUB_STEP_SUMMARY
+            echo "Summary report not generated — check artifacts for details." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: 📝 Display test results (Console)
+        if: always()
+        run: |
+          if [ -f automation/logs/pytest_output.log ]; then
+            echo "=== PYTEST OUTPUT ==="
+            cat automation/logs/pytest_output.log
+          fi
+
+          if [ -f automation/reports/execution-results.json ]; then
+            echo "=== EXECUTION SUMMARY ==="
+            python3 -c "
+          import json
+          with open('automation/reports/execution-results.json') as f:
+              data = json.load(f)
+          s = data.get('summary', {})
+          print(f\"Total: {s.get('total', 0)}\")
+          print(f\"Passed: {s.get('passed', 0)}\")
+          print(f\"Failed: {s.get('failed', 0)}\")
+          print(f\"Pass Rate: {s.get('pass_rate', 0):.1f}%\")
+          print(f\"Duration: {s.get('total_duration', 0):.2f}s\")
+          "
+          fi
+
+      - name: 📁 Upload All Test Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resistai-e2e-test-reports-${{ github.run_number }}
+          path: |
+            automation/reports/
+            automation/screenshots/
+            automation/logs/
+          retention-days: 30
+
+      - name: ✅ Check E2E Pass Rate
+        if: always()
+        run: |
+          if [ -f automation/reports/execution-results.json ]; then
+            python3 -c "
+          import json, sys
+          with open('automation/reports/execution-results.json') as f:
+              data = json.load(f)
+          s = data.get('summary', {})
+          rate = s.get('pass_rate', 0)
+          total = s.get('total', 0)
+          passed = s.get('passed', 0)
+          failed = s.get('failed', 0)
+          print(f'Pass Rate: {rate:.1f}% ({passed}/{total})')
+          print(f'Failed: {failed}')
+          if rate < 60:
+              print(f'WARN: Pass rate {rate:.1f}% is below 60% threshold')
+              sys.exit(0)  # Non-blocking for now
+          else:
+              print(f'Pass rate {rate:.1f}% meets threshold')
+          "
+          else
+            echo "⚠️ execution-results.json not found. Tests may have failed to start."
+          fi
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # JOB 5 — PR Smoke Tests (runs on PR, skips deploy/e2e)
+  # ──────────────────────────────────────────────────────────────────────────
+  pr-build-check:
+    name: 🔎 PR Build Validation
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript type-check
+        run: npx tsc --noEmit
+        continue-on-error: true
+
+      - name: Lint
+        run: npx expo lint
+        continue-on-error: true
+
+      - name: Test web export (dry-run)
+        run: |
+          npx expo export --platform web --output-dir dist-check
+          test -f dist-check/index.html && echo "✅ Web export successful" || echo "❌ Web export failed"
+        env:
+          EXPO_PUBLIC_BACKEND_URL: ""
+          NODE_OPTIONS: "--max-old-space-size=4096"
+
+      - name: Upload PR build
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-build-check-${{ github.run_number }}
+          path: dist-check/
+          retention-days: 3

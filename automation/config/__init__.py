@@ -1,0 +1,1 @@
+# ResistAI Automation Config Package
