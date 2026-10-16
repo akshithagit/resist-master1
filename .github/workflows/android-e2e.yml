@@ -1,4 +1,4 @@
-name: ResistAI — Android Appium E2E Automation & CI/CD Pipeline
+name: "ResistAI — Android Appium E2E Automation & CI/CD Pipeline"
 
 on:
   push:
@@ -32,7 +32,7 @@ jobs:
   # STAGE 1–21: Comprehensive Android Appium Build, Test, Report & Deploy
   # ────────────────────────────────────────────────────────────────────────────
   android-e2e-pipeline:
-    name: 📱 Android E2E Appium Automation
+    name: "📱 Android E2E Appium Automation"
     runs-on: macos-13 # macos-13 supports hardware-accelerated HAXM/KVM virtualization
     timeout-minutes: 60
 
@@ -42,49 +42,49 @@ jobs:
 
     steps:
       # Stage 1: Checkout Repository
-      - name: 📥 Stage 1: Checkout Repository
+      - name: "📥 Stage 1: Checkout Repository"
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       # Stage 2: Setup Java
-      - name: ☕ Stage 2: Setup Java ${{ env.JAVA_VERSION }}
+      - name: "☕ Stage 2: Setup Java ${{ env.JAVA_VERSION }}"
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
           java-version: ${{ env.JAVA_VERSION }}
 
       # Stage 3: Setup Android SDK
-      - name: 🛠️ Stage 3: Setup Android SDK
+      - name: "🛠️ Stage 3: Setup Android SDK"
         uses: android-actions/setup-android@v3
 
       # Stage 4: Setup Node.js & Install Appium
-      - name: 📦 Stage 4: Install Node.js & Appium Server
+      - name: "📦 Stage 4: Install Node.js & Appium Server"
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
 
-      - name: Install Appium 2.x & UiAutomator2 Driver
+      - name: "Install Appium 2.x & UiAutomator2 Driver"
         run: |
           npm install -g appium@latest
           appium driver install uiautomator2
           appium driver list
 
       # Setup Python for Test Runner & Reporting
-      - name: 🐍 Setup Python ${{ env.PYTHON_VERSION }}
+      - name: "🐍 Setup Python ${{ env.PYTHON_VERSION }}"
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: "pip"
 
-      - name: Install Mobile Automation Dependencies
+      - name: "Install Mobile Automation Dependencies"
         run: |
           python -m pip install --upgrade pip
           pip install -r automation/requirements.txt
 
       # Stage 5: Build APK
-      - name: 🏗️ Stage 5: Build Android Application / Mock APK Package
+      - name: "🏗️ Stage 5: Build Android Application / Mock APK Package"
         run: |
           mkdir -p android/app/build/outputs/apk/debug
           echo "Simulating / Generating debug APK package for Appium..."
@@ -92,7 +92,7 @@ jobs:
           ls -la android/app/build/outputs/apk/debug/
 
       # Stage 6 & 7: Start Android Emulator & Verify Readiness
-      - name: 📱 Stage 6 & 7: Launch Android Emulator & Verify Readiness
+      - name: "📱 Stage 6 & 7: Launch Android Emulator & Verify Readiness"
         id: emulator
         uses: reactive-circus/android-emulator-runner@v2
         continue-on-error: true
@@ -109,7 +109,7 @@ jobs:
             echo "✅ Android Emulator booted and ready."
 
       # Stage 8: Install APK automatically
-      - name: 📲 Stage 8: Install APK to Emulator
+      - name: "📲 Stage 8: Install APK to Emulator"
         continue-on-error: true
         run: |
           adb devices
@@ -119,7 +119,7 @@ jobs:
           fi
 
       # Stage 9 & 10: Start Appium Server & Verify Health
-      - name: 🚀 Stage 9 & 10: Start Appium Server & Verify Health
+      - name: "🚀 Stage 9 & 10: Start Appium Server & Verify Health"
         run: |
           nohup appium --log automation/logs/appium_server.log --port 4723 --relaxed-security > appium_stdout.log 2>&1 &
           sleep 5
@@ -134,7 +134,7 @@ jobs:
           done
 
       # Stage 11–17: Execute Appium E2E Tests (400+ cases) & Generate Reports
-      - name: 🧪 Stage 11–17: Execute 400+ Appium E2E Tests & Generate Reports
+      - name: "🧪 Stage 11–17: Execute 400+ Appium E2E Tests & Generate Reports"
         id: test_execution
         run: |
           python automation/runners/mobile_test_runner.py --retries 2
@@ -146,7 +146,7 @@ jobs:
           MOCK_DRIVER: "false"
 
       # Stage 18: Upload All Artifacts (Excel, HTML, JSON, Logs, Screenshots)
-      - name: 📁 Stage 18: Upload All Test Artifacts (30 Days Retention)
+      - name: "📁 Stage 18: Upload All Test Artifacts (30 Days Retention)"
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -157,7 +157,7 @@ jobs:
           retention-days: 30
 
       # Stage 19 & 20: Prepare GitHub Pages Deployment & Maintain Execution History
-      - name: 🌐 Stage 19 & 20: Structure Reports for GitHub Pages & Maintain History
+      - name: "🌐 Stage 19 & 20: Structure Reports for GitHub Pages & Maintain History"
         if: always()
         run: |
           mkdir -p public/reports/latest
@@ -189,23 +189,23 @@ jobs:
 
           touch public/.nojekyll
 
-      - name: Setup Pages
+      - name: "Setup Pages"
         if: always() && github.event_name == 'push'
         uses: actions/configure-pages@v4
 
-      - name: Upload Pages Artifact
+      - name: "Upload Pages Artifact"
         if: always() && github.event_name == 'push'
         uses: actions/upload-pages-artifact@v3
         with:
           path: public/
 
-      - name: Deploy Reports to GitHub Pages
+      - name: "Deploy Reports to GitHub Pages"
         id: deployment
         if: always() && github.event_name == 'push'
         uses: actions/deploy-pages@v4
 
       # Stage 21: Publish GitHub Action Step Summary
-      - name: 📊 Stage 21: Publish GitHub Action Step Summary
+      - name: "📊 Stage 21: Publish GitHub Action Step Summary"
         if: always()
         run: |
           if [ -f "Test Results/Summary/summary.md" ]; then
@@ -221,21 +221,21 @@ jobs:
           echo "[https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/latest/execution-report.html](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/latest/execution-report.html)" >> $GITHUB_STEP_SUMMARY
 
       # Failure Threshold Enforcement (Pass percentage >= 95%)
-      - name: 🚦 Quality Gate Enforcement
+      - name: "🚦 Quality Gate Enforcement"
         if: always()
         run: |
-          python -c "
+          python -c '
           import json, sys
           try:
-              with open('Test Results/JSON/execution-results.json') as f:
+              with open("Test Results/JSON/execution-results.json") as f:
                   data = json.load(f)
-              rate = data.get('summary', {}).get('pass_rate', 0)
-              print(f'Pass Rate: {rate}%')
+              rate = data.get("summary", {}).get("pass_rate", 0)
+              print(f"Pass Rate: {rate}%")
               if rate < 95.0:
-                  print('❌ FAILED: Pass rate below 95% threshold!')
+                  print("❌ FAILED: Pass rate below 95% threshold!")
                   sys.exit(1)
               else:
-                  print('✅ PASSED: Quality Gate met!')
+                  print("✅ PASSED: Quality Gate met!")
           except Exception as e:
-              print(f'Warning: {e}')
-          "
+              print(f"Warning: {e}")
+          '
