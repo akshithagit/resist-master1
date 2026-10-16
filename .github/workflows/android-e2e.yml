@@ -101,7 +101,7 @@ jobs:
       # Stage 6 & 7: Start Android Emulator & Verify Readiness
       - name: "📱 Stage 6 & 7: Launch Android Emulator & Verify Readiness"
         id: emulator
-        uses: reactive-circus/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@v2
         continue-on-error: true
         with:
           api-level: ${{ env.ANDROID_API_LEVEL }}
