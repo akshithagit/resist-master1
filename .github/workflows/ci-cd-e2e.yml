@@ -89,8 +89,10 @@ jobs:
           name: expo-web-dist
           path: dist/
 
-      - name: Add .nojekyll for GitHub Pages
-        run: touch dist/.nojekyll
+      - name: Add .nojekyll and 404 fallback for GitHub Pages
+        run: |
+          touch dist/.nojekyll
+          cp dist/index.html dist/404.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

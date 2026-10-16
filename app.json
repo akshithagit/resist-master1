@@ -24,6 +24,9 @@
     "plugins": [
       "expo-router",
       "expo-font"
-    ]
+    ],
+    "experiments": {
+      "baseUrl": "/resist-master1"
+    }
   }
 }

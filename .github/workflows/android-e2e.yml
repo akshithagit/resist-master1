@@ -164,7 +164,7 @@ jobs:
           mkdir -p public/reports/history/build-${{ github.run_number }}
 
           # Copy latest reports
-          cp -r "Test Results/HTML/"* public/reports/latest/
+          cp -r "Test Results/HTML/"* public/reports/latest/ || true
           cp -r "Test Results/Excel/"* public/reports/latest/ || true
           cp -r "Test Results/Summary/"* public/reports/latest/ || true
           mkdir -p public/reports/latest/screenshots public/reports/latest/logs
